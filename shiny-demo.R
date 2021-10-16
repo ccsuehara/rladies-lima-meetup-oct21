@@ -1,25 +1,25 @@
-library(shiny)
-library(tidyverse)
+## Haciendo  una shiny app básica. Tomado de los materiales de enseñanza oficiales de shiny app:
+# Por favor encuentra los materiales aquí: https://github.com/rstudio-education/shiny.rstudio.com-tutorial
 
-################### UI ##########################
+library(shiny)
+library(shinythemes)
 ui <- fluidPage(
-  selectInput("dataset", label = "Dataset", choices = ls("package:datasets")),
-  verbatimTextOutput("summary"),
-  tableOutput("table")
+  #theme = shinytheme("cyborg"),  # Aquí le agregamos un theme, si es de nuestro agrado
+  
+  #h1("Vamos a hacer una shiny app!"), #Aquí podemos insertar elementos html, como un título, en nuestra shiny app. 
+  sliderInput(inputId = 'num',
+              label = 'Choose a number',
+              value = 25,  min = 1, max = 100),
+  plotOutput("hist")
 )
 
-############### SERVER ############################
-server <- function(input, output, session) {
-  output$summary <- renderPrint({
-    dataset <- get(input$dataset, "package:datasets")
-    summary(dataset)
-  })
-  
-  output$table <- renderTable({
-    dataset <- get(input$dataset, "package:datasets")
-    dataset
+server <- function(input, output){
+  # output$hist <- renderPlot({hist(rnorm(100))
+  # })
+  output$hist <- renderPlot({
+    hist(rnorm(input$num))
+    
   })
 }
-
-################ RUN ###########################
-shinyApp(ui, server)
+  
+shinyApp(ui = ui, server = server)
